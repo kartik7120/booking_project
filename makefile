@@ -12,7 +12,7 @@ build_app: build_broker build_logger build_auth build_moviedb
 # build_broker: builds the broker binary as a linux executable
 build_broker:
 	@echo "Building broker binary..."
-	cd ../booking_broker-service && env GOOS=linux CGO_ENABLED=0 go build -o ${BROKER_BINARY} ./cmd/main.go
+	cd ../booking_broker_service && env GOOS=linux CGO_ENABLED=0 go build -o ${BROKER_BINARY} ./cmd/main.go
 	@echo "Done!"
 
 # build_logger: builds the logger binary as a linux executable
