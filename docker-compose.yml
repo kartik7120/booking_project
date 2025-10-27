@@ -1,0 +1,156 @@
+services:
+  front_end:
+    build:
+      context: ../booking_front_end
+      dockerfile: front-end-dev.dockerfile
+      no_cache: true
+      args: # Pass build arguments, environment variables during build time. Normal env are available during container runtime and not build time.
+        # VITE_BROKER_URL: http://broker_service:8080
+        VITE_BROKER_URL: http://localhost:8080
+    container_name: booking_front_end
+    ports:
+      - "3000:80"
+    networks:
+      - booking_network
+    develop:
+      watch:
+        - path: ../booking_frontend
+          action: sync
+          target: /app
+    # depends_on:
+    #   broker_service:
+    #     condition: service_healthy
+  broker_service:
+    build:
+      context: ../booking_broker_service
+      dockerfile: Dockerfile
+      no_cache: true
+    container_name: booking_broker_service
+    ports:
+      - "8080:8080"
+    networks:
+      - booking_network
+    env_file:
+      - ../booking_broker_service/.env
+    environment:
+      - DSN=postgresql://neondb_owner:npg_TqmOohyS6f9z@ep-fancy-dream-adr87jwi-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+    develop:
+      watch:
+        - path: ../booking_broker_service
+          action: sync
+          target: /app
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/ping" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+  payment_service:
+    build:
+      context: ../booking_payment_service
+      dockerfile: payment_service.dockerfile
+    container_name: booking_payment_service
+    ports:
+      - "1104:1104"
+    networks:
+      - booking_network
+    environment:
+      - DODOPAYMENT_TOKEN=DCAloEq9nw4VcTD0.b1zlF99GVzOWj8g2RqhhL7ZKeKZsw_tu7GQlxv__uezjWJ5g
+      - DB_URL_TEST=postgresql://neondb_owner:npg_TqmOohyS6f9z@ep-fancy-dream-adr87jwi-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+    develop:
+      watch:
+        - path: ../booking_payment_service
+          action: sync
+          target: /app
+
+  booking_auth_service:
+    build:
+      context: ../booking_auth_service
+      dockerfile: auth_service.dockerfile
+    container_name: booking_auth_service
+    ports:
+      - "1101:1101"
+    networks:
+      - booking_network
+    env_file:
+      - ../booking_auth_service/.env
+    develop:
+      watch:
+        - path: ../booking_auth_service
+          action: sync
+          target: /app
+
+  booking_moviedb_service:
+    build:
+      context: ../moviedb_service
+      dockerfile: booking_moviedb_service.dockerfile
+      no_cache: true
+    container_name: moviedb_service
+    ports:
+      - "1102:1102"
+    networks:
+      - booking_network
+    environment:
+      - DSN=postgresql://neondb_owner:npg_TqmOohyS6f9z@ep-fancy-dream-adr87jwi-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+    develop:
+      watch:
+        - path: ../moviedb_service
+          action: sync
+          target: /app
+    depends_on:
+      rabbitmq_booking_app:
+        condition: service_healthy
+  rabbitmq_service:
+    build:
+      context: ../rabbitmq_producer_service
+      dockerfile: rabbitmq_producer_service.dockerfile
+    container_name: rabbitmq_producer_service
+    ports:
+      - "1105:1105"
+    networks:
+      - booking_network
+    develop:
+      watch:
+        - path: ../rabbitmq_producer_service
+          action: sync
+          target: /app
+    depends_on:
+      rabbitmq_booking_app:
+        condition: service_healthy
+  # booking_logger_service:
+  #   build:
+  #     context: ../booking_logger_service
+  #     dockerfile: booking_logger_service.dockerfile
+  #   container_name: booking_logger_service
+  #   ports:
+  #     - "8120:8120"
+  #   networks:
+  #     - booking_network
+  #   develop:
+  #     watch:
+  #       - path: ../booking_logger_service
+  #         action: sync
+  #         target: /app
+  rabbitmq_booking_app:
+    image: "rabbitmq:4-management"
+    container_name: rabbitmq_booking_app
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - booking_network
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  redis_booking_app:
+    image: "redis:alpine"
+    container_name: redis_booking_app
+    ports:
+      - "6379:6379"
+    networks:
+      - booking_network
+networks:
+  booking_network:
+    driver: bridge
