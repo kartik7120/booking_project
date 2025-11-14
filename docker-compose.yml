@@ -1,13 +1,14 @@
 services:
   front_end:
-    build:
-      context: ../booking_front_end
-      dockerfile: front-end-dev.dockerfile
-      no_cache: true
-      args: # Pass build arguments, environment variables during build time. Normal env are available during container runtime and not build time.
-        # VITE_BROKER_URL: http://broker_service:8080
-        VITE_BROKER_URL: http://localhost:8080
+    # build:
+    #   context: ../booking_front_end
+    #   dockerfile: front-end-dev.dockerfile
+    #   no_cache: true
+    #   args: # Pass build arguments, environment variables during build time. Normal env are available during container runtime and not build time.
+    #     # VITE_BROKER_URL: http://broker_service:8080
+    #     VITE_BROKER_URL: http://localhost:8080
     container_name: booking_front_end
+    image: kartik7120/frontend_service:1.1
     ports:
       - "3000:80"
     networks:
@@ -21,11 +22,12 @@ services:
     #   broker_service:
     #     condition: service_healthy
   broker_service:
-    build:
-      context: ../booking_broker_service
-      dockerfile: Dockerfile
-      no_cache: true
+    # build:
+    #   context: ../booking_broker_service
+    #   dockerfile: Dockerfile
+    #   no_cache: true
     container_name: booking_broker_service
+    image: kartik7120/broker_service:1.0
     ports:
       - "8080:8080"
     networks:
@@ -40,15 +42,16 @@ services:
           action: sync
           target: /app
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/ping" ]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
       interval: 10s
       timeout: 10s
       retries: 5
   payment_service:
-    build:
-      context: ../booking_payment_service
-      dockerfile: payment_service.dockerfile
+    # build:
+    #   context: ../booking_payment_service
+    #   dockerfile: payment_service.dockerfile
     container_name: booking_payment_service
+    image: kartik7120/payment_service
     ports:
       - "1104:1104"
     networks:
@@ -63,10 +66,11 @@ services:
           target: /app
 
   booking_auth_service:
-    build:
-      context: ../booking_auth_service
-      dockerfile: auth_service.dockerfile
+    # build:
+    #   context: ../booking_auth_service
+    #   dockerfile: auth_service.dockerfile
     container_name: booking_auth_service
+    image: kartik7120/auth_service:1.1
     ports:
       - "1101:1101"
     networks:
@@ -80,11 +84,12 @@ services:
           target: /app
 
   booking_moviedb_service:
-    build:
-      context: ../moviedb_service
-      dockerfile: booking_moviedb_service.dockerfile
-      no_cache: true
+    # build:
+    #   context: ../moviedb_service
+    #   dockerfile: booking_moviedb_service.dockerfile
+    #   no_cache: true
     container_name: moviedb_service
+    image: kartik7120/booking_moviedb_service
     ports:
       - "1102:1102"
     networks:
@@ -100,10 +105,11 @@ services:
       rabbitmq_booking_app:
         condition: service_healthy
   rabbitmq_service:
-    build:
-      context: ../rabbitmq_producer_service
-      dockerfile: rabbitmq_producer_service.dockerfile
+    # build:
+    #   context: ../rabbitmq_producer_service
+    #   dockerfile: rabbitmq_producer_service.dockerfile
     container_name: rabbitmq_producer_service
+    image: kartik7120/rabbitmq_producer_service
     ports:
       - "1105:1105"
     networks:
@@ -139,7 +145,7 @@ services:
     networks:
       - booking_network
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 5s
       timeout: 10s
       retries: 5
