@@ -27,7 +27,7 @@ build_auth:
 # build_moviedb: builds the moviedb binary as a linux executable
 build_moviedb:
 	@echo "Building moviedb binary.."
-	cd ../moviedb_service && env GOOS=linux CGO_ENABLED=0 go build -o ${MOVIEDB_BINARY} ./cmd/main.go
+	cd ../booking_moviedb_service && env GOOS=linux CGO_ENABLED=0 go build -o ${MOVIEDB_BINARY} ./cmd/main.go
 	@echo "Done!"
 
 build_producer_service:
