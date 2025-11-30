@@ -109,7 +109,7 @@ services:
     #   context: ../rabbitmq_producer_service
     #   dockerfile: rabbitmq_producer_service.dockerfile
     container_name: rabbitmq_producer_service
-    image: kartik7120/rabbitmq_producer_service
+    image: kartik7120/rabbitmq_producer_service:1.1
     ports:
       - "1105:1105"
     networks:
