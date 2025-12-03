@@ -1,4 +1,45 @@
 services:
+  # strapi_service:
+  #   # build:
+  #   #   context: ../strapi_service
+  #   #   dockerfile: strapi_service.dockerfile
+  #   #   no_cache: true
+  #   container_name: strapi_service
+  #   image: kartik7120/strapi_service:1.6
+  #   ports:
+  #     - "1337:1337"
+  #   networks:
+  #     - booking_network
+  #   environment:
+  #     # Server
+  #     - HOST=0.0.0.0
+  #     - PORT=1337
+
+  #     # Secrets
+  #     - APP_KEYS=jygJ3jCA00fM9yCwXOjQXg==,taWChkREQG0s79ye4O2IJw==,7/Wo+xNrEskyRpS2MNpTow==,5b0tmJP2caS/i76aJRt5eA==
+  #     - API_TOKEN_SALT=tLE4Fuu2RF98vqCSOQFfiA==
+  #     - ADMIN_JWT_SECRET=Ux3gJNbSmyxVhhLKyjOBXA==
+  #     - TRANSFER_TOKEN_SALT=jDbnkm0C1wUKKcGJSR8wzw==
+  #     - ENCRYPTION_KEY=RvGT1ik8S0feucp+9RFsTQ==
+
+  #     # Database
+  #     - DATABASE_CLIENT=sqlite
+  #     - DATABASE_HOST=
+  #     - DATABASE_PORT=
+  #     - DATABASE_NAME=
+  #     - DATABASE_USERNAME=
+  #     - DATABASE_PASSWORD=
+  #     - DATABASE_SSL=false
+  #     - DATABASE_FILENAME=.tmp/data.db
+  #     - JWT_SECRET=wY44wOoF1UGuGWmA3uIlvQ==
+  #   develop:
+  #     watch:
+  #       - path: ../booking_front_end/ticket-booking-admin-dashboard
+  #         action: sync
+  #         target: /app
+  #   depends_on:
+  #     booking_moviedb_service:
+  #       condition: service_healthy
   front_end:
     # build:
     #   context: ../booking_front_end
@@ -27,7 +68,7 @@ services:
     #   dockerfile: Dockerfile
     #   no_cache: true
     container_name: booking_broker_service
-    image: kartik7120/broker_service:1.3
+    image: kartik7120/broker_service:1.6
     ports:
       - "8080:8080"
     networks:
@@ -89,13 +130,15 @@ services:
     #   dockerfile: booking_moviedb_service.dockerfile
     #   no_cache: true
     container_name: moviedb_service
-    image: kartik7120/booking_moviedb_service
+    image: kartik7120/booking_moviedb_service:2.0
     ports:
       - "1102:1102"
     networks:
       - booking_network
     environment:
       - DSN=postgresql://neondb_owner:npg_TqmOohyS6f9z@ep-fancy-dream-adr87jwi-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - STRAPI_API_TOKEN=b2c45366d1f87c8873314c35b29fd4d66116dca3b2862d5bbbb76d60d423faea855779c2588b836735be37be93099c653c9159355b3e42899ab094e99c01e42a86ba675f9334f86bb0279fe5f733693f22b9aa9954fb7f3562d1e41a0925356f9af153fd3f6ef8ee149a3b4751b0389f9ad2180784353a1bcc3fd0bfabb60a52
+      - STRAPI_URL=http://localhost:1337
     develop:
       watch:
         - path: ../moviedb_service
@@ -109,7 +152,7 @@ services:
     #   context: ../rabbitmq_producer_service
     #   dockerfile: rabbitmq_producer_service.dockerfile
     container_name: rabbitmq_producer_service
-    image: kartik7120/rabbitmq_producer_service:1.1
+    image: kartik7120/rabbitmq_producer_service:1.6
     ports:
       - "1105:1105"
     networks:
