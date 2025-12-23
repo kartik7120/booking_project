@@ -46,7 +46,7 @@ services:
     #     # VITE_BROKER_URL: http://broker_service:8080
     #     VITE_BROKER_URL: http://localhost:8080
     container_name: booking_front_end
-    image: kartik7120/frontend_service:1.1
+    image: kartik7120/front_end:1.3
     ports:
       - "3000:80"
     networks:
@@ -55,7 +55,7 @@ services:
       watch:
         - path: ../booking_frontend
           action: sync
-          target: /app
+          target: /
     # depends_on:
     #   broker_service:
     #     condition: service_healthy
@@ -65,7 +65,7 @@ services:
     #   dockerfile: Dockerfile
     #   no_cache: true
     container_name: booking_broker_service
-    image: kartik7120/broker_service:3.1
+    image: kartik7120/broker_service:4.3
     ports:
       - "8080:8080"
     networks:
@@ -89,7 +89,7 @@ services:
     #   context: ../booking_payment_service
     #   dockerfile: payment_service.dockerfile
     container_name: booking_payment_service
-    image: kartik7120/payment_service
+    image: kartik7120/payment_service:1.1
     ports:
       - "1104:1104"
     networks:
@@ -108,7 +108,7 @@ services:
     #   context: ../booking_auth_service
     #   dockerfile: auth_service.dockerfile
     container_name: booking_auth_service
-    image: kartik7120/auth_service:1.1
+    image: kartik7120/auth_service:1.2
     ports:
       - "1101:1101"
     networks:
@@ -127,7 +127,7 @@ services:
     #   dockerfile: booking_moviedb_service.dockerfile
     #   no_cache: true
     container_name: moviedb_service
-    image: kartik7120/booking_moviedb_service:7.3
+    image: kartik7120/booking_moviedb_service:9.2
     ports:
       - "1102:1102"
     networks:
@@ -149,7 +149,7 @@ services:
     #   context: ../rabbitmq_producer_service
     #   dockerfile: rabbitmq_producer_service.dockerfile
     container_name: rabbitmq_producer_service
-    image: kartik7120/rabbitmq_producer_service:2.4
+    image: kartik7120/rabbitmq_producer_service:2.8
     ports:
       - "1105:1105"
     networks:
