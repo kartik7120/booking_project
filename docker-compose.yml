@@ -46,7 +46,7 @@ services:
     #     # VITE_BROKER_URL: http://broker_service:8080
     #     VITE_BROKER_URL: http://localhost:8080
     container_name: booking_front_end
-    image: kartik7120/front_end:1.3
+    image: kartik7120/booking_front_end:4.5
     ports:
       - "3000:80"
     networks:
@@ -65,7 +65,7 @@ services:
     #   dockerfile: Dockerfile
     #   no_cache: true
     container_name: booking_broker_service
-    image: kartik7120/broker_service:4.3
+    image: kartik7120/broker_service:4.6
     ports:
       - "8080:8080"
     networks:
@@ -89,14 +89,16 @@ services:
     #   context: ../booking_payment_service
     #   dockerfile: payment_service.dockerfile
     container_name: booking_payment_service
-    image: kartik7120/payment_service:1.1
+    image: kartik7120/payment_service:1.9
     ports:
       - "1104:1104"
     networks:
       - booking_network
     environment:
-      - DODOPAYMENT_TOKEN=DCAloEq9nw4VcTD0.b1zlF99GVzOWj8g2RqhhL7ZKeKZsw_tu7GQlxv__uezjWJ5g
+      - DODOPAYMENT_TOKEN=JETucopgupgGWFiO.xsDxn8UqkLrwue0EoM5xw7iazGjiwOnbk1V8Vov0HQkVx5cp
       - DB_URL_TEST=postgresql://neondb_owner:npg_TqmOohyS6f9z@ep-fancy-dream-adr87jwi-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - ENV=test
+      - REDIRECT_URL=http://localhost:3000/confirmingBooking
     develop:
       watch:
         - path: ../booking_payment_service
@@ -127,7 +129,7 @@ services:
     #   dockerfile: booking_moviedb_service.dockerfile
     #   no_cache: true
     container_name: moviedb_service
-    image: kartik7120/booking_moviedb_service:9.2
+    image: kartik7120/booking_moviedb_service:9.9
     ports:
       - "1102:1102"
     networks:
