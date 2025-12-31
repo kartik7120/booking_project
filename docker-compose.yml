@@ -46,7 +46,7 @@ services:
     #     # VITE_BROKER_URL: http://broker_service:8080
     #     VITE_BROKER_URL: http://localhost:8080
     container_name: booking_front_end
-    image: kartik7120/booking_front_end:4.5
+    image: kartik7120/booking_front_end:5.1
     ports:
       - "3000:80"
     networks:
