@@ -104,8 +104,8 @@ build_broker_service_docker_image:
 build_front_end_docker_image:
 	@echo "Building front end service..."
 	cd ../booking_front_end && docker buildx build \
-	-t kartik7120/booking_front_end:5.7 \
+	-t kartik7120/booking_front_end:5.9 \
 	--build-arg VITE_BROKER_URL="https://broker-service-198155959998.europe-west1.run.app" \
 	-f front-end-dev.dockerfile . && \
-	docker image push kartik7120/booking_front_end:5.7
+	docker image push kartik7120/booking_front_end:5.9
 	@echo "Done!"
